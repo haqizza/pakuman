@@ -19,10 +19,10 @@ git branch
 ```
 ~ Untuk pindah branch, agar tidak ada perubahan yang tabrakan
 ```
-git checkout -b _[Nama Branch]_
+git checkout -b [Nama Branch]
 ```
 
-_[Nama Branch]_ : Isi boleh hanya dengan _update1_, _update2_. Tapi cek dulu apakah belum ada, di command sebelumnya, jika ada tambah angaknya
+[Nama Branch] : Isi boleh hanya dengan _update1_, _update2_. Tapi cek dulu apakah belum ada, di command sebelumnya, jika ada tambah angaknya
 
 ### Jika Selesai Mengubah
 ~ Untuk menambahkan semua perubahan
@@ -31,13 +31,13 @@ git add .
 ```
 ~ Untuk menetapkan perubahan
 ```
-git commit -m "_[Tulis Perubahan/penambahan yang dilakukan]_"
+git commit -m "[Tulis Perubahan/penambahan yang dilakukan]"
 ```
 ~ Menyimpan dari local ke remote
 ```
-git push origin _[Nama Branch]_
+git push origin [Nama Branch]
 ```
 
 
-* Perintah-perinah ini dilakukan di terminal
-* Untuk menggabungkan semua perubahan, biar oleh haqizza
+Perintah-perintah ini dilakukan di terminal
+ntuk menggabungkan semua perubahan, biar oleh haqizza
