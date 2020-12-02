@@ -39,5 +39,6 @@ git push origin [Nama Branch]
 ```
 
 
-Perintah-perintah ini dilakukan di terminal
-ntuk menggabungkan semua perubahan, biar oleh haqizza
+\*Perintah-perintah ini dilakukan di terminal
+
+\*Untuk menggabungkan semua perubahan, biar oleh haqizza
