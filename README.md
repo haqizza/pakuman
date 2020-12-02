@@ -19,7 +19,7 @@ _[Nama Branch]_ : Isi boleh hanya dengan _update1_, _update2_.
 tapi cek dulu apakah belum ada, di command sebelumnya, jika ada tambah angaknya
 
 # Jika Selesai Mengubah
-~ Untuk menambahkan semua perubahan
+~ Untuk menambahkan semua perubahan file
 git add .
 ~ Untuk menetapkan perubahan
 git commit -m "_[Tulis Perubahan/penambahan yang dilakukan]_"
