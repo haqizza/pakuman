@@ -1,5 +1,16 @@
 #include "..\lib\functions.h"
 
+void food() {
+    int i, j;
+    for(i=0;i<ROW;i++) {
+        for(j=0;j<COL;j++) {
+            if(grid[i][j] == ' ') {
+                grid[i][j] = '.';
+            }
+        }
+    }
+}
+
 void print_grid()
 {
     int i;
