@@ -1,64 +1,64 @@
 #include "lib.h"
 
 int main(){
-  createMap();
+  pthread_t t_car1, t_car2;
+  pthread_t t_input1, t_input2;
+  pthread_t t_ghost[5];
 
-  direction = STOP;
-  direction2 = STOP;
-  int i, count = 1;
+  // Init ncurses
+  initscr();
+  clear();
+  noecho();
+  cbreak();
+  curs_set(0);
 
-  ghost ghost1;
-  init_ghost(&ghost1, 1, 1);
-
-  car_1r = 9;
-  car_1c = 33;
-  car2_1r = 1;
-  car2_1c = 18;
-  
-  char ch;
-  food();
-  print_grid();
-
-  while(count){
-    if(_kbhit()){
-      ch = _getch();
-
-      switch(ch){
-        case 'd':
-          direction=RIGHT;
-          break;
-        case 'a':
-          direction=LEFT;
-          break;
-        case 'w':
-          direction = UP;
-          break;
-        case 's':
-          direction = DOWN;
-          break;
-        case 'l':
-          direction2 = RIGHT;
-          break;
-        case 'j':
-          direction2 = LEFT;
-          break;
-        case 'i':
-          direction2 = UP;
-          break;
-        case 'k':
-          direction2 = DOWN;
-          break;
-        default:;
-      }
-    }
-
-    score();
-    move_car(direction);
-    move_car2(direction2);
-    // move_ghost(&ghost1);
-    system("cls");
-    print_grid();
-    delay();
+  getmaxyx(stdscr, max_row, max_col);
+  if(max_row < ROW || max_col < COL){
+    printw("Jendela terlalu kecil, perbesar\n");
   }
+
+  win = newwin(ROW, COL, 0, max_col/2 - COL/2);
+  keypad(win, TRUE);
+  getmaxyx(win, max_row, max_col);
+  refresh();
+
+  loadMap();
+
+  isStop = 0;
+  
+  // Init Player
+  init_car(&car1, 1, 1, 'C');
+  init_car(&car2, 1, 69, '@');
+  // Init Ghost
+  init_ghost();
+
+  wrefresh(win);
+
+  pthread_create(&t_input1, NULL, user1Input, NULL);
+  // pthread_create(&t_input2, NULL, user2Input, NULL);
+  pthread_create(&t_car1, NULL, move_car1, NULL);
+  pthread_create(&t_car2, NULL, move_car2, NULL);
+
+  int i = 0;
+  // for (int i = 0; i < GHOST_NUMBER; i++) {
+    int *arg = malloc(sizeof(*arg));
+    *arg = 0;
+	  pthread_create(&t_ghost[i], NULL, move_ghost, arg);
+  // }
+
+  pthread_join(t_input1, NULL);
+  // pthread_join(t_input2, NULL);
+  pthread_join(t_car1, NULL);
+  pthread_join(t_car2, NULL);
+  
+  // for (int i = 0; i < GHOST_NUMBER; i++) {
+	  pthread_join(t_ghost[i], NULL);
+  // }
+  
+  curs_set(1);
+  clear();
+  refresh();
+  resetty();
+  endwin();
   return 0;
 }

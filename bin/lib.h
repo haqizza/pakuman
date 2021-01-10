@@ -1,13 +1,17 @@
-#include<stdlib.h>
-#include<stdio.h>
-#include<time.h>
-#include<string.h>
-#include<stdbool.h>
-#include<windows.h>
-// #include"maps.h"
-
+#include <stdlib.h>
+// #include <stdio.h>
+#include <time.h>
+#include <string.h>
+#include <stdbool.h>
+#include <pthread.h>
+#include <ncurses.h>
+#include <unistd.h>
+#define GHOST_NUMBER 5
 #define ROW 32
 #define COL 72
+// #include<windows.h>
+// #include"maps.h"
+
 
 typedef enum{
     UP,
@@ -18,26 +22,40 @@ typedef enum{
 } moves;
 
 typedef struct{
-    moves mov;
     int r;
     int c;
-} ghost;
+    char foot;
+    moves dir;
+} Ghosts;
+
+typedef struct{
+    int r;
+    int c;
+    char ch;
+    moves dir;
+    int score;
+} Player;
 
 
-moves direction, direction2, gh1_dir;
+WINDOW *win;
+pthread_mutex_t lock;
 
-int car_1r, car_1c;
-int car2_1r, car2_1c;
-int score_p1;
-int score_p2;
-
-
+Player car1, car2;
+Ghosts ghosts[GHOST_NUMBER];
+int isStop;
+int max_col, max_row;
 char grid[ROW][COL];
 
-void move_car(moves dir);
-void move_car2(moves dir);
+void loadMap();
+void init_car(Player *car, int r, int c, char ch);
+void init_ghost();
+int randNumber();
 void food();
-void print_grid();
-void score();
-void init_ghost(ghost *gh,int row, int col);
-void move_ghost(ghost *gh);
+void *user1Input(void *arg);
+void *user2Input(void *arg);
+void delay();
+void kill(Player *car);
+void show_score(Player car);
+void *move_car1(void *arg);
+void *move_car2(void *arg);
+void *move_ghost(void *i);
