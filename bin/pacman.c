@@ -35,8 +35,7 @@ int main(){
 
   wrefresh(win);
 
-  pthread_create(&t_input1, NULL, user1Input, NULL);
-  // pthread_create(&t_input2, NULL, user2Input, NULL);
+  pthread_create(&t_input1, NULL, userInput, NULL);
   pthread_create(&t_car1, NULL, move_car1, NULL);
   pthread_create(&t_car2, NULL, move_car2, NULL);
 
@@ -45,17 +44,17 @@ int main(){
     int *arg = malloc(sizeof(*arg));
     *arg = i;
 	  pthread_create(&t_ghost[i], NULL, move_ghost, arg);
-    mvwprintw(stdscr, 0, 0, "%d", *arg);
   }
 
   pthread_join(t_input1, NULL);
-  // pthread_join(t_input2, NULL);
   pthread_join(t_car1, NULL);
   pthread_join(t_car2, NULL);
   
   for (i = 0; i < GHOST_NUMBER; i++) {
 	  pthread_join(t_ghost[i], NULL);
   }
+
+  end_screen();
   
   curs_set(1);
   clear();

@@ -47,6 +47,7 @@ void init_car(Player *car, int r, int c, char ch){
   car->ch = ch;
   car->dir = STOP;
   car->score = 0;
+  car->death = 0;
   wmove(win, car->r, car->c);
   waddch(win, car->ch);
 }
@@ -77,7 +78,7 @@ void food() {
   }
 }
 
-void *user1Input(void *arg){
+void *userInput(void *arg){
   int ch;
   while(isStop == 0){
     if(ch = wgetch(win)){
@@ -109,28 +110,16 @@ void *user1Input(void *arg){
   }
 }
 
-void *user2Input(void *arg){
-  int ch;
-  while(isStop == 0){
-    if(ch = wgetch(win)){
-      if(ch == KEY_RIGHT){
-        car2.dir = RIGHT;
-      }
-      else if(ch == KEY_LEFT){
-        car2.dir = LEFT;
-      }
-      else if(ch == KEY_UP){
-        car2.dir = UP;
-      }
-      else if(ch == KEY_DOWN){
-        car2.dir = DOWN;
-      }
-    }
-  }
-}
-
 void kill(Player *car){
+  pthread_mutex_unlock(&lock);
+  pthread_mutex_lock(&lock);
+  car->death = 1;
 
+  if(car1.death == 1 && car2.death == 1){
+    isStop = 1;
+  }
+  pthread_mutex_unlock(&lock);
+  pthread_mutex_lock(&lock);
 }
 
 int * randNumber(){
@@ -165,7 +154,7 @@ void show_score(Player car){
 void *move_car1(void *arg){
   char c = '@';
 
-  while(isStop == 0){
+  while(isStop == 0 && car1.death == 0){
     pthread_mutex_lock(&lock);
     if(car1.dir == UP){
       char next_c = mvwinch(win, car1.r - 1, car1.c);
@@ -196,7 +185,7 @@ void *move_car1(void *arg){
         car1.r += 1;
 
         if(car1.r == max_row - 1){
-          car1.r = max_row - 2;
+          car1.r = 2;
         }
 
         if(next_c == '.'){
@@ -215,8 +204,8 @@ void *move_car1(void *arg){
         waddch(win, ' ');
         car1.c -= 1;
 
-        if(car1.c == beg_col){
-          car1.c = beg_col + 1;
+        if(car1.c == 0){
+          car1.c = 1;
         }
 
         if(next_c == '.'){
@@ -251,12 +240,19 @@ void *move_car1(void *arg){
     pthread_mutex_unlock(&lock);
     delayOn();
   }
+
+  if(car1.death == 1){
+    car1.dir = STOP;
+    wmove(win, car1.r, car1.c);
+    waddch(win, ' ');
+    wrefresh(win);
+  }
 }
 
 void *move_car2(void *arg){
   char c = 'C';
 
-  while(isStop == 0){
+  while(isStop == 0 && car2.death == 0){
     pthread_mutex_lock(&lock);
     if(car2.dir == UP){
       char next_c = mvwinch(win, car2.r - 1, car2.c);
@@ -265,6 +261,10 @@ void *move_car2(void *arg){
         wmove(win, car2.r, car2.c);
         waddch(win, ' ');
         car2.r -= 1;
+
+        if(car2.r == beg_row){
+          car2.r = beg_row + 1;
+        }
 
         if(next_c == '.') {
           car2.score++;
@@ -281,6 +281,10 @@ void *move_car2(void *arg){
         waddch(win, ' ');
         car2.r += 1;
 
+        if(car2.r == max_row - 1){
+          car2.r = 2;
+        }
+
         if(next_c == '.'){
           car2.score++;
         }
@@ -295,6 +299,10 @@ void *move_car2(void *arg){
         wmove(win, car2.r, car2.c);
         waddch(win, ' ');
         car2.c -= 1;
+        
+        if(car2.c == 0){
+          car2.c = 1;
+        }
 
         if(next_c == '.'){
           car2.score++;
@@ -311,6 +319,10 @@ void *move_car2(void *arg){
         waddch(win, ' ');
         car2.c += 1;
 
+        if(car2.c == max_col - 1){
+          car2.c = max_col - 2;
+        }
+        
         if(next_c == '.'){
           car2.score++;
         }
@@ -323,6 +335,13 @@ void *move_car2(void *arg){
     wrefresh(win);
     pthread_mutex_unlock(&lock);
     delayOn();
+  }
+
+  if(car2.death == 1){
+    car2.dir = STOP;
+    wmove(win, car2.r, car2.c);
+    wrefresh(win);
+    waddch(win, ' ');
   }
 }
 
@@ -461,9 +480,8 @@ void *move_ghost(void *i){
     }
 
     n++;
-    
+    mvprintw(index,0,"%d", isStop);
     wrefresh(win);
-    refresh();
     pthread_mutex_unlock(&lock);
     if(ghost.dir != STOP){
       delayOn();
@@ -478,4 +496,14 @@ void ghost_footprint(Ghosts *ghost, char next_c){
   else if(next_c == ' '){
     ghost->foot = ' ';
   }
+}
+
+void end_screen(){
+  wclear(win);
+  wborder(win, '*', '*', '*', '*', '*', '*', '*', '*');
+
+  mvwprintw(win, 3, 1, "   *****    **                   ");
+  mvwprintw(win, 4, 1, "   *       *  *                   ");
+  mvwprintw(win, 5, 1, "   *  **   ****                   ");
+  mvwprintw(win, 6, 1, "   *****   *  *                  ");
 }

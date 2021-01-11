@@ -34,6 +34,7 @@ typedef struct{
     char ch;
     moves dir;
     int score;
+    int death;
 } Player;
 
 
@@ -52,13 +53,14 @@ void init_car(Player *car, int r, int c, char ch);
 void init_ghost();
 int * randNumber();
 void food();
-void *user1Input(void *arg);
-void *user2Input(void *arg);
+void *userInput(void *arg);
 void delay();
 void kill(Player *car);
 void show_score(Player car);
 void *move_car1(void *arg);
 void *move_car2(void *arg);
+void kill(Player *car);
 void *move_ghost(void *i);
 void get_ghost_dir(Ghosts *ghost, int move_to);
 void ghost_footprint(Ghosts *ghost, char next_c);
+void end_screen();
