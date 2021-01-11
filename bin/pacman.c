@@ -20,6 +20,7 @@ int main(){
   win = newwin(ROW, COL, 0, max_col/2 - COL/2);
   keypad(win, TRUE);
   getmaxyx(win, max_row, max_col);
+  getbegyx(win, beg_row, beg_col);
   refresh();
 
   loadMap();
@@ -39,21 +40,22 @@ int main(){
   pthread_create(&t_car1, NULL, move_car1, NULL);
   pthread_create(&t_car2, NULL, move_car2, NULL);
 
-  int i = 0;
-  // for (int i = 0; i < GHOST_NUMBER; i++) {
+  int i;
+  for (i = 0; i < GHOST_NUMBER; i++) {
     int *arg = malloc(sizeof(*arg));
-    *arg = 0;
+    *arg = i;
 	  pthread_create(&t_ghost[i], NULL, move_ghost, arg);
-  // }
+    mvwprintw(stdscr, 0, 0, "%d", *arg);
+  }
 
   pthread_join(t_input1, NULL);
   // pthread_join(t_input2, NULL);
   pthread_join(t_car1, NULL);
   pthread_join(t_car2, NULL);
   
-  // for (int i = 0; i < GHOST_NUMBER; i++) {
+  for (i = 0; i < GHOST_NUMBER; i++) {
 	  pthread_join(t_ghost[i], NULL);
-  // }
+  }
   
   curs_set(1);
   clear();

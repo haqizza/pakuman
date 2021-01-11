@@ -133,11 +133,17 @@ void kill(Player *car){
 
 }
 
-int randNumber(){
+int * randNumber(){
+  static int numbers[100];
   struct timeval t;
-  int hasil = 1 + (t.tv_usec % 3);
+  srand(time(0));
+  int n;
+  unsigned short seed[3] = {1, 2, 5};
+  for(int i = 0; i < 100; i++){
+    numbers[i] = (nrand48(seed) % 4);
+  }
 
-  return hasil;
+  return numbers;
 }
 
 void delayOn(){
@@ -169,8 +175,8 @@ void *move_car1(void *arg){
         waddch(win, ' ');
         car1.r -= 1;
 
-        if(car1.r == 0){
-          car1.r = 1;
+        if(car1.r == beg_row){
+          car1.r = beg_row + 1;
         }
 
         if(next_c == '.') {
@@ -209,6 +215,10 @@ void *move_car1(void *arg){
         waddch(win, ' ');
         car1.c -= 1;
 
+        if(car1.c == beg_col){
+          car1.c = beg_col + 1;
+        }
+
         if(next_c == '.'){
           car1.score++;
         }
@@ -223,6 +233,10 @@ void *move_car1(void *arg){
         wmove(win, car1.r, car1.c);
         waddch(win, ' ');
         car1.c += 1;
+
+        if(car1.c == max_col - 1){
+          car1.c = max_col - 2;
+        }
 
         if(next_c == '.'){
           car1.score++;
@@ -313,84 +327,130 @@ void *move_car2(void *arg){
 }
 
 void *move_ghost(void *i){
-  int moveTo;
-  int go = 0;
+  int move_to, n = 0;
+  int *random_numbers;
   char next_c;
   int index = *((int *) i);
   Ghosts ghost = ghosts[index];
 
+  random_numbers = randNumber();
+
   while(isStop == 0){
     pthread_mutex_lock(&lock);
-    // Random move
-    while(go == 0){
-      // Random 0-3
-      moveTo = randNumber();
-      
-      switch(moveTo){
-        case 0:
-              next_c = mvwinch(win, ghost.r - 1, ghost.c);
+    
+    if(n == 99){
+      n = 0;
+    }
+    
+    if(ghost.dir == UP){
+      next_c = mvwinch(win, ghost.r - 1, ghost.c);
 
-              if(next_c != '*'){
-                ghost.dir = UP;
-                go = 1;
-              }
+      if(next_c == '*'){
+        ghost.dir = STOP;
+      }
+      else{
+
+        ghost_footprint(&ghost, next_c);
+        wmove(win, ghost.r, ghost.c);
+        waddch(win, ghost.foot);
+        ghost.r -= 1;
+
+        if(ghost.r == 0){
+          ghost.r = 1;
+          ghost.dir = STOP;
+        }
+
+        if(ghost.r == beg_row){
+          ghost.r = beg_row + 1;
+        }
+
+        wmove(win, ghost.r, ghost.c);
+        waddch(win, 'G');
+      }
+    }
+    else if(ghost.dir == DOWN){
+      next_c = mvwinch(win, ghost.r + 1, ghost.c);
+
+      if(next_c == '*'){
+        ghost.dir = STOP;
+      }
+      else{
+        ghost_footprint(&ghost, next_c);
+        wmove(win, ghost.r, ghost.c);
+        waddch(win, ghost.foot);
+        ghost.r += 1;
+
+        if(ghost.r == max_row - 1){
+          ghost.r = max_row - 2;
+          ghost.dir = STOP;
+        }
+
+        wmove(win, ghost.r, ghost.c);
+        waddch(win, 'G');
+      }
+    }
+    else if(ghost.dir == RIGHT){
+      next_c = mvwinch(win, ghost.r, ghost.c + 1);
+
+      if(next_c == '*'){
+        ghost.dir = STOP;
+      }
+      else{
+        ghost_footprint(&ghost, next_c);
+        wmove(win, ghost.r, ghost.c);
+        waddch(win, ghost.foot);
+        ghost.c += 1;
+
+        if(ghost.c == max_col - 1){
+          ghost.c = max_col - 2;
+          ghost.dir = STOP;
+        }
+
+        wmove(win, ghost.r, ghost.c);
+        waddch(win, 'G');
+      }
+    }
+    else if(ghost.dir == LEFT){
+      next_c = mvwinch(win, ghost.r, ghost.c - 1);
+
+      if(next_c == '*'){
+        ghost.dir = STOP;
+      }
+      else{
+        ghost_footprint(&ghost, next_c);
+        wmove(win, ghost.r, ghost.c);
+        waddch(win, ghost.foot);
+        ghost.c -= 1;
+
+        if(ghost.c == beg_col){
+          ghost.c = beg_col + 1;
+          ghost.dir = STOP;
+        }
+
+        wmove(win, ghost.r, ghost.c);
+        waddch(win, 'G');
+      }
+    }
+
+    move_to = *(random_numbers + n);
+
+    if(ghost.dir == STOP){
+      switch(move_to){
+        case 0:
+              ghost.dir = UP;
               break;
         case 1:
-              next_c = mvwinch(win, ghost.r + 1, ghost.c);
-
-              if(next_c != '*'){
-                ghost.dir = DOWN;
-                go = 1;
-              }
+              ghost.dir = DOWN;
               break;
         case 2:
-              next_c = mvwinch(win, ghost.r, ghost.c + 1);
-
-              if(next_c != '*'){
-                ghost.dir = RIGHT;
-                go = 1;
-              }
+              ghost.dir = RIGHT;
               break;
         case 3:
-              next_c = mvwinch(win, ghost.r, ghost.c - 1);
-
-              if(next_c != '*'){
-                ghost.dir = LEFT;
-                go = 1;
-              }
+              ghost.dir = LEFT;
               break;
         default:
               break;
       }
-    }
-
-    // Move
-    if(ghost.dir == UP){
-      wmove(win, ghost.r, ghost.c);
-      waddch(win, ghost.foot);
-      ghost.r -= 1;
-    }
-    else if(ghost.dir == DOWN){
-      wmove(win, ghost.r, ghost.c);
-      waddch(win, ghost.foot);
-      ghost.r += 1;
-    }
-    else if(ghost.dir == RIGHT){
-      wmove(win, ghost.r, ghost.c);
-      waddch(win, ghost.foot);
-      ghost.c += 1;
-    }
-    else if(ghost.dir == LEFT){
-      wmove(win, ghost.r, ghost.c);
-      waddch(win, ghost.foot);
-      ghost.c -= 1;
-    }
-
-    if(next_c == '.'){
-      ghost.foot = '.';
-    }
-    else{
-      ghost.foot = ' ';
     }
 
     if ((ghost.r == car1.r) && (ghost.c == car1.c)) {
@@ -400,10 +460,22 @@ void *move_ghost(void *i){
       kill(&car2);
     }
 
-    wmove(win, ghost.r, ghost.c);
-    waddch(win, 'G');
+    n++;
+    
     wrefresh(win);
+    refresh();
     pthread_mutex_unlock(&lock);
-    delayOn();
+    if(ghost.dir != STOP){
+      delayOn();
+    }
+  }
+}
+
+void ghost_footprint(Ghosts *ghost, char next_c){
+  if(next_c == '.'){
+    ghost->foot = '.';
+  }
+  else if(next_c == ' '){
+    ghost->foot = ' ';
   }
 }
