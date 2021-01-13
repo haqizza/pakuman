@@ -4,7 +4,7 @@ int main(){
   pthread_t t_car1, t_car2;
   pthread_t t_input1, t_input2;
   pthread_t t_ghost[5];
-
+  
   // Init ncurses
   initscr();
   clear();
@@ -22,6 +22,12 @@ int main(){
   getmaxyx(win, max_row, max_col);
   getbegyx(win, beg_row, beg_col);
   refresh();
+
+  start_color();
+  init_pair(1, COLOR_BLUE, COLOR_BLACK);
+  init_pair(2, COLOR_BLUE, COLOR_BLUE);
+  
+  start_screen();
 
   loadMap();
 
@@ -53,9 +59,10 @@ int main(){
   for (i = 0; i < GHOST_NUMBER; i++) {
 	  pthread_join(t_ghost[i], NULL);
   }
-
+  wrefresh(win);
+  refresh();
   end_screen();
-  
+  getch();
   curs_set(1);
   clear();
   refresh();

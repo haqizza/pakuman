@@ -1,41 +1,74 @@
 #include "lib.h"
 
+void start_screen(){
+  wborder(win, '*', '*', '*', '*', '*', '*', '*', '*');
+
+  wattron(win, COLOR_PAIR(1));
+  mvwprintw(win, 3, 1, "#######   #####   ##   ##  ##    ##  ###     ###   #####   ###     ##");
+  mvwprintw(win, 4, 1, "##   ##  ##   ##  ##  ##   ##    ##  ####   ####  ##   ##  ####    ##");
+  mvwprintw(win, 5, 1, "######   ##   ##  ## ##    ##    ##  ## ## ## ##  ##   ##  ## ##   ##");
+  mvwprintw(win, 6, 1, "##       #######  ###      ##    ##  ##  ##   ##  #######  ##  ##  ##");
+  mvwprintw(win, 7, 1, "##       ##   ##  ## ##    ##    ##  ##       ##  ##   ##  ##   ## ##");
+  mvwprintw(win, 8, 1, "##       ##   ##  ##  ##   ##    ##  ##       ##  ##   ##  ##    ####");
+  mvwprintw(win, 9, 1, "##       ##   ##  ##   ##  ########  ##       ##  ##   ##  ##     ###");
+  wattroff(win, COLOR_PAIR(1));
+
+  char a[21] = "====================";
+  char b[21] = "PRESS A KEY TO START";
+  char c[21] = "====================";
+  mvwprintw(win, 12, max_col/2 - strlen(a)/2, "%s", a);
+  wattron(win, A_BLINK);
+  wattron(win, A_BOLD);
+  mvwprintw(win, 13, max_col/2 - strlen(a)/2, "%s", b);
+  wattroff(win, A_BOLD);
+  wattroff(win, A_BLINK);
+  mvwprintw(win, 14, max_col/2 - strlen(a)/2, "%s", c);
+
+  wrefresh(win);
+  getch();
+
+  wclear(win);
+  wrefresh(win);
+}
+
 void loadMap(){
   strcpy(grid[0],  "***********************************************************************"),
   strcpy(grid[1],  "*                                                                     *"),
-  strcpy(grid[2],  "*   ***************         *******   ******        ***************   *"),
-  strcpy(grid[3],  "*   ***************         *******   ******        ***************   *"),
-  strcpy(grid[4],  "*   ***************         *******   ******        ***************   *"),
-  strcpy(grid[5],  "*   *******                 *******   ******                *******   *"),
-  strcpy(grid[6],  "*   *******                 *******   ******                *******   *"),
-  strcpy(grid[7],  "*   *******                 *******   ******                *******   *"),
-  strcpy(grid[8],  "*   *******                 *******   ******                *******   *"),
-  strcpy(grid[9],  "*                                                                     *"),
-  strcpy(grid[10], "*                   **************    **************                  *"),
-  strcpy(grid[11], "*                   **************    **************                  *"),
-  strcpy(grid[12], "*                   **************    **************                  *"),
-  strcpy(grid[13], "*                   **************    **************                  *"),
-  strcpy(grid[14], "*                   **************    **************                  *"),
-  strcpy(grid[15], "*     ****************************    ******************************  *"),
-  strcpy(grid[16], "*     ****************************    ******************************  *"),
-  strcpy(grid[17], "*     ****************************    ******************************  *"),
-  strcpy(grid[18], "*     ****************************    ******************************  *"),
-  strcpy(grid[19], "*                                                                     *"),
-  strcpy(grid[20], "*                                                                     *"),
-  strcpy(grid[21], "*                                                                     *"),
-  strcpy(grid[22], "*                                                                     *"),
-  strcpy(grid[23], "*    **********************                 **********************    *"),
-  strcpy(grid[24], "*    **********************                 **********************    *"),
-  strcpy(grid[25], "*    **********************                 **********************    *"),
-  strcpy(grid[26], "*    ***********                                       ***********    *"),
-  strcpy(grid[27], "*    ***********                                       ***********    *"),
-  strcpy(grid[28], "*    ***********                                       ***********    *"),
-  strcpy(grid[29], "*                                                                     *"),
+  strcpy(grid[2],  "* ***************** *************** *************** ***************** *"),
+  strcpy(grid[3],  "* ***************** *************** *************** ***************** *"),
+  strcpy(grid[4],  "* *********                 ******* *******                 ********* *"),
+  strcpy(grid[5],  "* ********* ******* ******* ******* ******* ******* ******* ********* *"),
+  strcpy(grid[6],  "* ********* *             * ******* ******* *             * ********* *"),
+  strcpy(grid[7],  "* ********* * *********** * ****       **** * *********** * ********* *"),
+  strcpy(grid[8],  "* ********* * *********** * **** ***** **** * *********** * ********* *"),
+  strcpy(grid[9],  "*                                *****                                *"),
+  strcpy(grid[10], "* ***************** ***** ****** ***** ****** ***** ***************** *"),
+  strcpy(grid[11], "* ***************** ***** ******       ****** ***** ***************** *"),
+  strcpy(grid[12], "* ***************** ***** ****** ***** ****** ***** ***************** *"),
+  strcpy(grid[13], "* ***************** *****                     ***** ***************** *"),
+  strcpy(grid[14], "*                         *******************                         *"),
+  strcpy(grid[15], "**** ************** ***** ******************* ***** ************* *****"),
+  strcpy(grid[16], "**** ************** ***** ******************* ***** ************* *****"),
+  strcpy(grid[17], "*                         *******************                         *"),
+  strcpy(grid[18], "* ***************** *****                     ***** ***************** *"),
+  strcpy(grid[19], "* ***************** ***** ****** ***** ****** ***** ***************** *"),
+  strcpy(grid[20], "* ***************** ***** ******       ****** ***** ***************** *"),
+  strcpy(grid[21], "* ***************** ***** ****** ***** ****** ***** ***************** *"),
+  strcpy(grid[22], "*                                *****                                *"),
+  strcpy(grid[23], "* ********* * *********** * **** ***** **** * *********** * ********* *"),
+  strcpy(grid[24], "* ********* * *********** * ****       **** * *********** * ********* *"),
+  strcpy(grid[25], "* ********* *             * ******* ******* *             * ********* *"),
+  strcpy(grid[26], "* ********* ******* ******* ******* ******* ******* ******* ********* *"),
+  strcpy(grid[27], "* *********                 ******* *******                 ********* *"),
+  strcpy(grid[28], "* ***************** *************** *************** ***************** *"),
+  strcpy(grid[29], "* ***************** *************** *************** ***************** *"),
   strcpy(grid[30], "*                                                                     *"),
   strcpy(grid[31], "***********************************************************************");
-
+  
   for(int i = 0; i < ROW; i++){
+    wattron(win, COLOR_PAIR(2));
     wprintw(win, "%s\n", grid[i]);
+    wattroff(win, COLOR_PAIR(2));
   }
   food();
   wrefresh(win);
@@ -53,8 +86,8 @@ void init_car(Player *car, int r, int c, char ch){
 }
 
 void init_ghost(){
-  int row[5] = {9, 9, 19, 22, 27};
-  int col[5] = {1, 60, 40, 3, 20};
+  int row[5] = {14, 11, 18, 22, 27};
+  int col[5] = {1, 37, 37, 3, 20};
 
   for(int i = 0; i < 5; i++){
     ghosts[i].r = row[i];
@@ -80,7 +113,12 @@ void food() {
 
 void *userInput(void *arg){
   int ch;
+
   while(isStop == 0){
+    if(car1.score + car2.score == 722){
+      isStop == 1;
+      break;
+    }
     if(ch = wgetch(win)){
       if(ch == 'd'){
         car1.dir = RIGHT;
@@ -107,19 +145,17 @@ void *userInput(void *arg){
         car2.dir = DOWN;
       }
     }
+
   }
+  return NULL;
 }
 
 void kill(Player *car){
-  pthread_mutex_unlock(&lock);
-  pthread_mutex_lock(&lock);
   car->death = 1;
 
   if(car1.death == 1 && car2.death == 1){
     isStop = 1;
   }
-  pthread_mutex_unlock(&lock);
-  pthread_mutex_lock(&lock);
 }
 
 int * randNumber(){
@@ -147,7 +183,7 @@ void show_score(Player car){
     mvwprintw(win, 0, 1, "Score P1: %d", car.score);
   }
   else{
-    mvwprintw(win, 0, max_col - 13, "Score P2: %d", car.score);
+    mvwprintw(win, 0, max_col - 15, "Score P2: %d", car.score);
   }
 }
 
@@ -247,6 +283,7 @@ void *move_car1(void *arg){
     waddch(win, ' ');
     wrefresh(win);
   }
+  return NULL;
 }
 
 void *move_car2(void *arg){
@@ -343,6 +380,7 @@ void *move_car2(void *arg){
     wrefresh(win);
     waddch(win, ' ');
   }
+  return NULL;
 }
 
 void *move_ghost(void *i){
@@ -480,13 +518,13 @@ void *move_ghost(void *i){
     }
 
     n++;
-    mvprintw(index,0,"%d", isStop);
     wrefresh(win);
     pthread_mutex_unlock(&lock);
     if(ghost.dir != STOP){
       delayOn();
     }
   }
+  return NULL;
 }
 
 void ghost_footprint(Ghosts *ghost, char next_c){
@@ -502,8 +540,23 @@ void end_screen(){
   wclear(win);
   wborder(win, '*', '*', '*', '*', '*', '*', '*', '*');
 
-  mvwprintw(win, 3, 1, "   *****    **                   ");
-  mvwprintw(win, 4, 1, "   *       *  *                   ");
-  mvwprintw(win, 5, 1, "   *  **   ****                   ");
-  mvwprintw(win, 6, 1, "   *****   *  *                  ");
+  wattron(win, A_BLINK);
+  wattron(win, COLOR_PAIR(1));
+  mvwprintw(win, 3, 5, "#####   ###   ##   ##  #####    #####  #       #  #####  #####");
+  mvwprintw(win, 4, 5, "#      #   #  # # # #  #        #   #   #     #   #      #   #");
+  mvwprintw(win, 5, 5, "#  ##  #####  #  #  #  #####    #   #    #   #    #####  ####");
+  mvwprintw(win, 6, 5, "#   #  #   #  #     #  #        #   #     # #     #      #  #");
+  mvwprintw(win, 7, 5, "#####  #   #  #     #  #####    #####      #      #####  #   #");
+  wattroff(win, COLOR_PAIR(1));
+  wattroff(win, A_BLINK);
+
+  wattron(win, A_BOLD);
+  mvwprintw(win, 10, 5, "SCORE");
+  wattroff(win, A_BOLD);
+  mvwprintw(win, 11, 5, "=================");
+  mvwprintw(win, 12, 5, " Player 1 : %d", car1.score);
+  mvwprintw(win, 13, 5, " Player 2 : %d", car2.score);
+  mvwprintw(win, 14, 5, "=================");
+
+  wrefresh(win);
 }

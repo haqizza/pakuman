@@ -6,6 +6,7 @@
 #include <pthread.h>
 #include <ncurses.h>
 #include <unistd.h>
+#include <wchar.h>
 #define GHOST_NUMBER 5
 #define ROW 32
 #define COL 72
@@ -48,6 +49,7 @@ int max_col, max_row;
 int beg_col, beg_row;
 char grid[ROW][COL];
 
+void start_screen();
 void loadMap();
 void init_car(Player *car, int r, int c, char ch);
 void init_ghost();
