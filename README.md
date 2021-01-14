@@ -1,6 +1,12 @@
 # pakuman
-Simple Pacman Multiplayer Game
+CLI Pacman Multiplayer Game
 
+### Kelompok 1 : lOS
+1. Alif Rizza Z (1901434)
+2. Alya Chairunnisa F (1908324)
+3. Muhammad Izzatul Haq	(1904618)
+4. Muhammad Naufal W (1904802)
+5. Farras Abdulaziz E	(1905484)
 
 ### Copy repository dari remote(cloud) ke local
 ~ Arahkan terminal ke tempat akan menyimpan directory, lalu
